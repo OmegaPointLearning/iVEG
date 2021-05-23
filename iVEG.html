@@ -141,11 +141,9 @@
 
 			function moveEvent(event) {
 				if (event.type == 'touchemove') {
-					brush.x = changedTouches[0].pageX;
-					brush.y = changedTouches[0].pageY;
-				} 
-
-				if (event.type == 'mousemove') {
+					brush.x = event.changedTouches[0].pageX;
+					brush.y = event.changedTouches[0].pageY;
+				} else if (event.type == 'mousemove') {
 					brush.x = event.offsetX;
 					brush.y = event.offsetY;
 				}
