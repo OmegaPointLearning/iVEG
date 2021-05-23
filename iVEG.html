@@ -140,18 +140,11 @@
 			}
 
 			function moveEvent(event) {
-				if (event.type == 'touchemove') {
-					event.preventDefault()
-					
-					brush.x = event.changedTouches[0].pageX;
-					brush.y = event.changedTouches[0].pageY;
-				} else if (event.type == 'mousemove') {
-					brush.x = event.offsetX;
-					brush.y = event.offsetY;
-				}
+				brush.x = event.offsetX;
+				brush.y = event.offsetY;
+			}
 
-				incrementor([brush.radius])
-				
+			incrementor([brush.radius]) {
 				if (brush.radius.value == 0) {
 					randomColor(brush)
 					changeShape(brush);
@@ -161,9 +154,7 @@
 			}
 
 			frontground.addEventListener("mousemove", moveEvent);
-			frontground.addEventListener("touchmove", moveEvent);
-
+		
 		</script>
-
 	</body>
 </htnl>
