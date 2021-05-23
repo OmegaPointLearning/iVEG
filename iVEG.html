@@ -139,13 +139,15 @@
 				brush.shape = Shapes[next];
 			}
 
-			frontground.addEventListener("mousemove" || "touchmove", e => {
-				if (e.changedTouches) {
-					brush.x = e.changedTouches[0].pageX;
-					brush.y = e.changedTouches[0].pageY;
-				} else {
-					brush.x = e.offsetX;
-					brush.y = e.offsetY;
+			function moveEvent(event) {
+				if (event.type == 'touchemove') {
+					brush.x = event.changedTouches[0].pageX;
+					brush.y = event.changedTouches[0].pageY;
+				} 
+
+				if (event.type == 'mousemove') {
+					brush.x = event.offsetX;
+					brush.y = event.offsetY;
 				}
 
 				incrementor([brush.radius])
@@ -155,10 +157,12 @@
 					changeShape(brush);
 				}
 				colorScroller(brush)
-
 				draw(brush)
-			})
-			
+			}
+
+			frontground.addEventListener("mousemove", moveEvent);
+			frontground.addEventListener("touchmove", moveEvent);
+
 		</script>
 
 	</body>
