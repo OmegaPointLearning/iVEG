@@ -1,0 +1,165 @@
+<html>
+	<head>
+		<title>Interactive Visual Experience Generator - Omega Point Research</title>
+
+		<style>
+			.container {
+				position: relative;
+			}
+
+			.container > canvas {
+				position: absolute;
+				top: 0;
+				left: 0;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<!-- first make the canvas then link any scripts -->
+		<div class="container">
+			<canvas id="frontground"></canvas>
+		</div>
+
+		<script>
+			//define some necessary canvas related variables
+			const width = window.innerWidth - .2 * window.innerWidth;
+			const height = window.innerHeight - .2 * window.innerHeight;
+
+			const frontground = document.getElementById("frontground");
+			frontground.width = width;
+			frontground.height = height;
+
+			const frontContext = frontground.getContext("2d");
+
+			//shape functions
+			const Shapes = {
+				circle: function(context) {
+					brush.radius.max = width / 2;
+					context.arc(brush.x, brush.y, brush.radius.value, 0, 2 * Math.PI);
+				},
+
+				rectangle: function(context) {
+					brush.radius.max = width / 4;
+					context.rect(brush.x - brush.radius.value, brush.y - brush.radius.value, brush.radius.value * 2, brush.radius.value * 2);
+				},
+
+				triangle: function(context) {
+					context.moveTo(brush.x, brush.y - brush.radius.value);			
+					context.lineTo(brush.x - brush.radius.value, brush.y + brush.radius.value);
+					context.lineTo(brush.x + brush.radius.value, brush.y + brush.radius.value);
+					context.lineTo(brush.x, brush.y - brush.radius.value);
+				}
+			}
+
+			//foreground brush
+			var brush = {
+				x: 0,
+				y: 0,
+
+				//some brush properties can be passed to the incrementor
+				radius: {value: 1, growing: true, min: 0, max: (width / 2), step: 1},
+
+				red: {value: 1, growing: true, min: 0, max: 255, step: 1},
+				green: {value: 1, growing: true, min: 0, max: 255, step: 1},
+				blue: {value: 1, growing: true, min: 0, max: 255, step: 1},
+
+				//shape is a set of instructions to be called from the draw function
+				shape: Shapes.rectangle,
+				context: frontContext
+			}
+
+			function draw(brush) {
+				let colorCode = "#" + brush.red.value.toString(16) + brush.green.value.toString(16) + brush.blue.value.toString(16);
+
+				brush.context.beginPath();
+				brush.context.lineWidth = 2;
+				brush.context.strokeStyle = colorCode; 
+
+				brush.shape(brush.context);
+
+				brush.context.stroke();
+				brush.context.closePath();
+			}
+
+			//general function accepts list of incrementable properties
+			function incrementor(propertyList) {
+				for (i = 0; i < propertyList.length; i++) {
+					let property = propertyList[i];
+
+					if (property.growing == true) {
+						property.value += property.step;
+					} else {
+						property.value -= property.step;
+					}
+
+					if (property.value >= property.max) {
+						property.growing = false;
+					}
+
+					if (property.value <= property.min) {
+						property.growing = true;
+					}
+				}
+			}
+
+			//miscelaneous functions that might not get used
+			function randomColor(brush) {
+				brush.red.value = Math.floor(Math.random() * 255);
+				brush.green.value = Math.floor(Math.random() * 255);
+				brush.blue.value = Math.floor(Math.random() * 255);
+			}
+
+			function colorScroller(brush) {
+				if (brush.red.growing == true) {
+					incrementor([brush.green, brush.blue]);
+				}
+
+				if (brush.green.growing == true) {
+					incrementor([brush.red, brush.blue]);
+				}
+
+				if (brush.blue.growin == true) {
+					incrementor(brush.red, brush.green);
+				}
+			}
+
+			function changeShape(brush) {
+				let current = brush.shape.name;
+				let keys = Object.keys(Shapes);
+				let index = keys.indexOf(current);
+
+				if (index == keys.length - 1) {
+					index = 0;
+				} else {
+					index++;
+				}
+
+				let next = keys[index];
+				brush.shape = Shapes[next];
+			}
+
+			frontground.addEventListener("mousemove" || "touchmove", e => {
+				if (e.changedTouches) {
+					brush.x = e.changedTouches[0].pageX;
+					brush.y = e.changedTouches[0].pageY;
+				} else {
+					brush.x = e.offsetX;
+					brush.y = e.offsetY;
+				}
+
+				incrementor([brush.radius])
+				
+				if (brush.radius.value == 0) {
+					randomColor(brush)
+					changeShape(brush);
+				}
+				colorScroller(brush)
+
+				draw(brush)
+			})
+			
+		</script>
+
+	</body>
+</htnl>
