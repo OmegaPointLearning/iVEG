@@ -141,8 +141,8 @@
 
 			function moveEvent(event) {
 				if (event.type == 'touchemove') {
-					brush.x = event.changedTouches[0].pageX;
-					brush.y = event.changedTouches[0].pageY;
+					brush.x = changedTouches[0].pageX;
+					brush.y = changedTouches[0].pageY;
 				} 
 
 				if (event.type == 'mousemove') {
