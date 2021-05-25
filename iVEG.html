@@ -49,6 +49,17 @@
 					context.lineTo(brush.x - brush.radius.value, brush.y + brush.radius.value);
 					context.lineTo(brush.x + brush.radius.value, brush.y + brush.radius.value);
 					context.lineTo(brush.x, brush.y - brush.radius.value);
+				},
+
+				star: function(context) {
+					brush.radius.max = (2/5) * width;
+
+					context.moveTo(brush.x, brush.y - brush.radius.value);
+					context.lineTo(brush.x + (3/5) * brush.radius.value, brush.y + brush.radius.value);
+					context.lineTo(brush.x - brush.radius.value, brush.y - (1/5) * brush.radius.value);
+					context.lineTo(brush.x + brush.radius.value, brush.y - (1/5) * brush.radius.value);
+					context.lineTo(brush.x - (3/5) * brush.radius.value, brush.y + brush.radius.value);
+					context.lineTo(brush.x, brush.y - brush.radius.value);
 				}
 			}
 
@@ -66,6 +77,8 @@
 
 				//shape is a set of instructions to be called from the draw function
 				shape: Shapes.rectangle,
+
+				//context is where the brush draws to
 				context: frontContext
 			}
 
@@ -139,22 +152,23 @@
 				brush.shape = Shapes[next];
 			}
 
-			function moveEvent(event) {
-				brush.x = event.offsetX;
-				brush.y = event.offsetY;
-			}
+			frontground.addEventListener("mousemove", e => {
 
-			incrementor([brush.radius]) {
+				brush.x = e.offsetX;
+				brush.y = e.offsetY;
+				
+				incrementor([brush.radius])
+				colorScroller(brush)
+
 				if (brush.radius.value == 0) {
 					randomColor(brush)
 					changeShape(brush);
 				}
-				colorScroller(brush)
-				draw(brush)
-			}
 
-			frontground.addEventListener("mousemove", moveEvent);
-		
+				draw(brush)
+			})
+			
 		</script>
+
 	</body>
 </htnl>
