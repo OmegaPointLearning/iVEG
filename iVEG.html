@@ -34,33 +34,55 @@
 
 			//shape functions
 			const Shapes = {
-				circle: function(context) {
-					brush.radius.max = width / 2;
-					context.arc(brush.x, brush.y, brush.radius.value, 0, 2 * Math.PI);
+				classic: {
+					circle: function(context) {
+						brush.radius.max = width / 2;
+						context.arc(brush.x, brush.y, brush.radius.value, 0, 2 * Math.PI);
+					},
+
+					rectangle: function(context) {
+						brush.radius.max = width / 4;
+
+						context.rect(brush.x - brush.radius.value, brush.y - brush.radius.value, brush.radius.value * 2, brush.radius.value * 2);
+					},
+
+					triangle: function(context) {
+						context.moveTo(brush.x, brush.y - brush.radius.value);			
+						context.lineTo(brush.x - brush.radius.value, brush.y + brush.radius.value);
+						context.lineTo(brush.x + brush.radius.value, brush.y + brush.radius.value);
+						context.lineTo(brush.x, brush.y - brush.radius.value);
+					},
+
+					star: function(context) {
+						brush.radius.max = (2/5) * width;
+
+						context.moveTo(brush.x, brush.y - brush.radius.value);
+						context.lineTo(brush.x + (3/5) * brush.radius.value, brush.y + brush.radius.value);
+						context.lineTo(brush.x - brush.radius.value, brush.y - (1/5) * brush.radius.value);
+						context.lineTo(brush.x + brush.radius.value, brush.y - (1/5) * brush.radius.value);
+						context.lineTo(brush.x - (3/5) * brush.radius.value, brush.y + brush.radius.value);
+						context.lineTo(brush.x, brush.y - brush.radius.value);
+					}
 				},
 
-				rectangle: function(context) {
-					brush.radius.max = width / 4;
-					context.rect(brush.x - brush.radius.value, brush.y - brush.radius.value, brush.radius.value * 2, brush.radius.value * 2);
-				},
+				sauce: {
+					fountain: function(context) {
+						brush.radius.max = width / 2;
 
-				triangle: function(context) {
-					context.moveTo(brush.x, brush.y - brush.radius.value);			
-					context.lineTo(brush.x - brush.radius.value, brush.y + brush.radius.value);
-					context.lineTo(brush.x + brush.radius.value, brush.y + brush.radius.value);
-					context.lineTo(brush.x, brush.y - brush.radius.value);
-				},
+						let newX = brush.x + Math.floor((Math.random() * 2 * brush.radius.value) - brush.radius.value);
+						let newY = brush.y + Math.floor((Math.random() * 2 * brush.radius.value) - brush.radius.value);
 
-				star: function(context) {
-					brush.radius.max = (2/5) * width;
+						let controlX = width - Math.floor(Math.random() * width);
+						let controlY = height - Math.floor(Math.random() * height);
 
-					context.moveTo(brush.x, brush.y - brush.radius.value);
-					context.lineTo(brush.x + (3/5) * brush.radius.value, brush.y + brush.radius.value);
-					context.lineTo(brush.x - brush.radius.value, brush.y - (1/5) * brush.radius.value);
-					context.lineTo(brush.x + brush.radius.value, brush.y - (1/5) * brush.radius.value);
-					context.lineTo(brush.x - (3/5) * brush.radius.value, brush.y + brush.radius.value);
-					context.lineTo(brush.x, brush.y - brush.radius.value);
-				}
+						context.moveTo(brush.x, brush.y);
+						context.quadraticCurveTo(controlX, controlY, newX, newY);
+
+						context.moveTo(newX, newY);
+						context.quadraticCurveTo(controlY, controlX, brush.x, brush.y);
+
+					}
+				} 
 			}
 
 			//foreground brush
@@ -76,7 +98,7 @@
 				blue: {value: 1, growing: true, min: 0, max: 255, step: 1},
 
 				//shape is a set of instructions to be called from the draw function
-				shape: Shapes.rectangle,
+				shape: Shapes.classic.star,
 
 				//context is where the brush draws to
 				context: frontContext
@@ -138,8 +160,9 @@
 			}
 
 			function changeShape(brush) {
+				//scrolls through all the classic shapes
 				let current = brush.shape.name;
-				let keys = Object.keys(Shapes);
+				let keys = Object.keys(Shapes.classic);
 				let index = keys.indexOf(current);
 
 				if (index == keys.length - 1) {
@@ -149,11 +172,10 @@
 				}
 
 				let next = keys[index];
-				brush.shape = Shapes[next];
+				brush.shape = Shapes.classic[next];
 			}
 
 			frontground.addEventListener("mousemove", e => {
-
 				brush.x = e.offsetX;
 				brush.y = e.offsetY;
 				
@@ -162,12 +184,24 @@
 
 				if (brush.radius.value == 0) {
 					randomColor(brush)
-					changeShape(brush);
-				}
-
-				draw(brush)
-			})
+				}	
+				
+				draw(brush);
+			});
 			
+			window.addEventListener("keydown", e => {
+
+				switch(e.key) {
+					case "s":
+					brush.shape = Shapes.sauce.fountain;
+					break;
+
+					case "c":
+					changeShape(brush)
+					break;
+				}
+			});
+
 		</script>
 
 	</body>
