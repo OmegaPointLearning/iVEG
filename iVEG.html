@@ -35,128 +35,169 @@
 			//shape functions
 			const Shapes = {
 				classic: {
-					shapes: {
-						circle: function(context) {
-							brush.radius.max = width / 2;
-							context.arc(brush.x, brush.y, brush.radius.value, 0, 2 * Math.PI);
-						},
+					//classic shapes only need a position and a radius
+					circle: function(context) {
+						brush.radius.max = width / 2;
+						context.arc(brush.x1, brush.y1, brush.radius.value, 0, 2 * Math.PI);
+					},
 
-						rectangle: function(context) {
-							brush.radius.max = width / 4;
+					rectangle: function(context) {
+						brush.radius.max = width / 4;
 
-							context.rect(brush.x - brush.radius.value, brush.y - brush.radius.value, brush.radius.value * 2, brush.radius.value * 2);
-						},
+						context.rect(brush.x1 - brush.radius.value, brush.y1 - brush.radius.value, brush.radius.value * 2, brush.radius.value * 2);
+					},
 
-						triangle: function(context) {
-							context.moveTo(brush.x, brush.y - brush.radius.value);			
-							context.lineTo(brush.x - brush.radius.value, brush.y + brush.radius.value);
-							context.lineTo(brush.x + brush.radius.value, brush.y + brush.radius.value);
-							context.lineTo(brush.x, brush.y - brush.radius.value);
-						},
+					triangle: function(context) {
+						context.moveTo(brush.x1, brush.y1 - brush.radius.value);			
+						context.lineTo(brush.x1 - brush.radius.value, brush.y1 + brush.radius.value);
+						context.lineTo(brush.x1 + brush.radius.value, brush.y1 + brush.radius.value);
+						context.lineTo(brush.x1, brush.y1 - brush.radius.value);
+					},
 
-						star: function(context) {
-							brush.radius.max = (2/5) * width;
+					star: function(context) {
+						brush.radius.max = (2/5) * width;
 
-							context.moveTo(brush.x, brush.y - brush.radius.value);
-							context.lineTo(brush.x + (3/5) * brush.radius.value, brush.y + brush.radius.value);
-							context.lineTo(brush.x - brush.radius.value, brush.y - (1/5) * brush.radius.value);
-							context.lineTo(brush.x + brush.radius.value, brush.y - (1/5) * brush.radius.value);
-							context.lineTo(brush.x - (3/5) * brush.radius.value, brush.y + brush.radius.value);
-							context.lineTo(brush.x, brush.y - brush.radius.value);
-						},
+						context.moveTo(brush.x1, brush.y1 - brush.radius.value);
+						context.lineTo(brush.x1 + (3/5) * brush.radius.value, brush.y1 + brush.radius.value);
+						context.lineTo(brush.x1 - brush.radius.value, brush.y1 - (1/5) * brush.radius.value);
+						context.lineTo(brush.x1 + brush.radius.value, brush.y1 - (1/5) * brush.radius.value);
+						context.lineTo(brush.x1 - (3/5) * brush.radius.value, brush.y1 + brush.radius.value);
+						context.lineTo(brush.x1, brush.y1 - brush.radius.value);
+					},
 
-						diamond: function(context) {
-							brush.radius.max = width / 2;
+					diamond: function(context) {
+						brush.radius.max = width / 2;
 
-							context.moveTo(brush.x, brush.y - (brush.radius.value + .33 * brush.radius.value));
-							context.lineTo(brush.x - brush.radius.value, brush.y);
-							context.lineTo(brush.x, brush.y + (brush.radius.value + .33 * brush.radius.value));
-							context.lineTo(brush.x + brush.radius.value, brush.y);
-							context.lineTo(brush.x, brush.y - (brush.radius.value + .33 * brush.radius.value));
-						},
+						context.moveTo(brush.x1, brush.y1 - (brush.radius.value + .33 * brush.radius.value));
+						context.lineTo(brush.x1 - brush.radius.value, brush.y1);
+						context.lineTo(brush.x1, brush.y1 + (brush.radius.value + .33 * brush.radius.value));
+						context.lineTo(brush.x1 + brush.radius.value, brush.y1);
+						context.lineTo(brush.x1, brush.y1 - (brush.radius.value + .33 * brush.radius.value));
+					},
 
-						hexagon: function(context) {
-							brush.radius.max = width / 2
+					hexagon: function(context) {
+						brush.radius.max = width / 2
 
-							context.moveTo(brush.x - brush.radius.value, brush.y);
-							context.lineTo(brush.x - (brush.radius.value - .55 * brush.radius.value), brush.y - (.75 * brush.radius.value));
-							context.lineTo(brush.x + (brush.radius.value - .55 * brush.radius.value), brush.y - (.75 * brush.radius.value));
-							context.lineTo(brush.x + brush.radius.value, brush.y);
-							context.lineTo(brush.x + (brush.radius.value - .55 * brush.radius.value), brush.y + (.75 * brush.radius.value));
-							context.lineTo(brush.x - (brush.radius.value - .55 * brush.radius.value), brush.y + (.75 * brush.radius.value));
-							context.lineTo(brush.x - brush.radius.value, brush.y);
-						}
+						context.moveTo(brush.x1 - brush.radius.value, brush.y1);
+						context.lineTo(brush.x1 - (brush.radius.value - .55 * brush.radius.value), brush.y1 - (.75 * brush.radius.value));
+						context.lineTo(brush.x1 + (brush.radius.value - .55 * brush.radius.value), brush.y1 - (.75 * brush.radius.value));
+						context.lineTo(brush.x1 + brush.radius.value, brush.y1);
+						context.lineTo(brush.x1 + (brush.radius.value - .55 * brush.radius.value), brush.y1 + (.75 * brush.radius.value));
+						context.lineTo(brush.x1 - (brush.radius.value - .55 * brush.radius.value), brush.y1 + (.75 * brush.radius.value));
+						context.lineTo(brush.x1 - brush.radius.value, brush.y1);
 					}
 				},
 
 				sauce: {
-					data: {
-						trigCycles: 0
+					//saucy shapes use more brush variables and aren't in categories yet
+					fountain: function(context) {
+						brush.radius.max = width / 2;
+
+						context.lineWidth = 2 + ((brush.radius.value / brush.radius.max) * 10);
+
+						let newX = brush.x1 + Math.floor((Math.random() * 2 * brush.radius.value) - brush.radius.value);
+						let newY = brush.y1 + Math.floor((Math.random() * 2 * brush.radius.value) - brush.radius.value);
+						let controlX = width - Math.floor(Math.random() * width) - brush.radius.value;
+						let controlY = height - Math.floor(Math.random() * height) - brush.radius.value;
+
+						context.moveTo(brush.x1, brush.y1);
+						context.quadraticCurveTo(controlX, controlY, newX, newY);
+
+						controlX = width - Math.floor(Math.random() * width);
+						controlY = height - Math.floor(Math.random() * height);
+
+						context.moveTo(newX, newY);
+						context.quadraticCurveTo(controlX, controlY, brush.x1, brush.y1);
 					},
 
-					shapes: {
-						fountain: function(context) {
-							brush.radius.max = width / 2;
+					fuzzySine: function(context) {
+						brush.radius.max = height / 5;
+						brush.radius.step = 2;
+						brush.trigCycle.max = 1;
 
-							context.lineWidth = 2 + ((brush.radius.value / brush.radius.max) * 10);
-
-							let newX = brush.x + Math.floor((Math.random() * 2 * brush.radius.value) - brush.radius.value);
-							let newY = brush.y + Math.floor((Math.random() * 2 * brush.radius.value) - brush.radius.value);
-							let controlX = width - Math.floor(Math.random() * width) - brush.radius.value;
-							let controlY = height - Math.floor(Math.random() * height) - brush.radius.value;
-
-							context.moveTo(brush.x, brush.y);
-							context.quadraticCurveTo(controlX, controlY, newX, newY);
-
-							controlX = width - Math.floor(Math.random() * width);
-							controlY = height - Math.floor(Math.random() * height);
-
-							context.moveTo(newX, newY);
-							context.quadraticCurveTo(controlX, controlY, brush.x, brush.y);
-						},
-
-						doubleSine: function(context) {
-							brush.radius.max = height / 2;
-
-							context.moveTo(brush.x, brush.y);
-
-							if (Shapes.sauce.data.trigCycles == 2) {
-								Shapes.sauce.data.trigCycles = 0;
-							} else if (Shapes.sauce.data.trigCycles == 0) {
-								context.lineTo(brush.x, brush.y + brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max)));
-							} else {
-								context.lineTo(brush.x, brush.y - brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max)));
-							}
-							
-							if (brush.radius.value == brush.radius.min) {
-								Shapes.sauce.data.trigCycles++;
-								console.log(Shapes.sauce.data.trigCycles)
-							}
+						if (brush.x == 0 && brush.y == 0) {
+							brush.x = brush.x1;
+							brush.y = brush.y1;
 						}
+
+						context.lineWidth = (height / 5) * (brush.radius.value / brush.radius.max)
+						context.moveTo(brush.x, brush.y);
+
+						if (brush.trigCycle.value == 0) {
+							context.lineTo(brush.x1, brush.y1 + brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max)));
+							brush.y = brush.y1 + brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max));
+						} else {
+							context.lineTo(brush.x1, brush.y1 - brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max)));
+							brush.y = brush.y1 - brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max));
+						}
+						
+						incrementor([brush.radius])
+
+						if (brush.radius.value <= brush.radius.min) {
+							incrementor([brush.trigCycle]);
+							console.log(brush.trigCycle)
+						}
+
+						brush.x = brush.x1;
+						brush.radius.step = 1;
+					},
+
+					ribbonSine: function(context) {
+						brush.radius.max = height / 5;
+						brush.radius.step = 2;
+						brush.trigCycle.max = 1;
+
+						context.moveTo(brush.x, brush.y);
+
+						if (brush.trigCycle.value == 0) {
+							context.lineTo(brush.x1, brush.y1 + brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max)));
+						} else {
+							context.lineTo(brush.x1, brush.y1 - brush.radius.max * Math.sin((Math.PI / 2) * (brush.radius.value / brush.radius.max)));
+						}
+						
+						incrementor([brush.radius])
+
+						if (brush.radius.value <= brush.radius.min) {
+							incrementor([brush.trigCycle]);
+							console.log(brush.trigCycle)
+						}
+
+						brush.x = brush.x1;
+						brush.y = brush.y1;
+						brush.radius.step = 1;
 					} 
+
 				}
 			}
 
-			//foreground brush
+			//brush objects
 			var brush = {
 				x: 0,
 				y: 0,
+				x1: 0,
+				y1: 0,
 
 				//some brush properties can be passed to the incrementor
-				radius: {value: 1, growing: true, min: 0, max: (width / 2), step: 1},
+				angle: {value: 0, growing: true, min: 0, max: 2 * Math.PI, step: 1, decrementable: false},
+				radius: {value: 1, growing: true, min: 0, max: (width / 2), step: 1, decrementable: true},
+				trigCycle: {value: 0, growing: true, min: 0, max: 1, step: 1, decrementable: false},
 
-				red: {value: 1, growing: true, min: 0, max: 255, step: 1},
-				green: {value: 1, growing: true, min: 0, max: 255, step: 1},
-				blue: {value: 1, growing: true, min: 0, max: 255, step: 1},
+				red: {value: 1, growing: true, min: 0, max: 255, step: 1, decrementable: true},
+				green: {value: 1, growing: true, min: 0, max: 255, step: 1, decrementable: true},
+				blue: {value: 1, growing: true, min: 0, max: 255, step: 1, decrementable: true},
 
 				//shape is a set of instructions to be called from the draw function
-				shape: Shapes.classic.shapes.star,
+				shape: Shapes.classic.star,
 
 				//context is where the brush draws to
 				context: frontContext
 			}
 
 			function draw(brush) {
+				if (brush.radius.value < 0){
+					brush.radius.value = 0;
+				}
+				
 				let colorCode = "#" + brush.red.value.toString(16) + brush.green.value.toString(16) + brush.blue.value.toString(16);
 
 				brush.context.beginPath();
@@ -177,14 +218,20 @@
 					if (property.growing == true) {
 						property.value += property.step;
 					} else {
-						property.value -= property.step;
+						if (property.decrementable == true) {
+							property.value -= property.step;
+						}
 					}
 
-					if (property.value >= property.max) {
-						property.growing = false;
+					if (property.value > property.max) {
+						if (property.decrementable == true) {
+							property.growing = false;
+						} else {
+							property.value = property.min;
+						}
 					}
 
-					if (property.value <= property.min) {
+					if (property.value < property.min) {
 						property.growing = true;
 					}
 				}
@@ -228,8 +275,8 @@
 			}
 
 			frontground.addEventListener("mousemove", e => {
-				brush.x = e.offsetX;
-				brush.y = e.offsetY;
+				brush.x1 = e.offsetX;
+				brush.y1 = e.offsetY;
 				
 				incrementor([brush.radius])
 				colorScroller(brush)
@@ -237,11 +284,11 @@
 				if (brush.radius.value == 0) {
 					randomColor(brush)
 
-					if (Object.keys(Shapes.classic.shapes).indexOf(brush.shape.name) > -1) {
-						changeShape(brush, Shapes.classic.shapes);
+					if (Object.keys(Shapes.classic).indexOf(brush.shape.name) > -1) {
+						changeShape(brush, Shapes.classic);
 					}
 				}	
-				
+
 				draw(brush);
 			});
 			
@@ -249,11 +296,11 @@
 
 				switch(e.key) {
 					case "s":
-					changeShape(brush, Shapes.sauce.shapes)
+					changeShape(brush, Shapes.sauce)
 					break;
 
 					case "c":
-					changeShape(brush, Shapes.classic.shapes);
+					changeShape(brush, Shapes.classic);
 					break;
 				}
 			});
