@@ -302,6 +302,22 @@
 					case "c":
 					changeShape(brush, Shapes.classic);
 					break;
+
+					case "ArrowUp":
+					if (brush.radius.value < brush.radius.max) {
+						brush.radius.value++;
+						colorScroller(brush);
+						draw(brush);
+					};
+					break;
+
+					case "ArrowDown":
+					if (brush.radius.value > brush.radius.min) {
+						brush.radius.value--;
+						colorScroller(brush);
+						draw(brush);
+					}
+					break;
 				}
 			});
 
