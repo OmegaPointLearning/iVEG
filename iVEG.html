@@ -18,7 +18,7 @@
 	<body>
 		<!-- first make the canvas then link any scripts -->
 		<div class="container">
-			<canvas id="frontground"></canvas>
+			<canvas id="frontground">the canvas you edit</canvas>
 		</div>
 
 		<script>
@@ -29,7 +29,6 @@
 			const frontground = document.getElementById("frontground");
 			frontground.width = width;
 			frontground.height = height;
-
 			const frontContext = frontground.getContext("2d");
 
 			//shape functions
@@ -120,7 +119,7 @@
 							brush.y = brush.y1;
 						}
 
-						context.lineWidth = (height / 5) * (brush.radius.value / brush.radius.max)
+						context.lineWidth = (brush.radius.max) * (brush.radius.value / brush.radius.max)
 						context.moveTo(brush.x, brush.y);
 
 						if (brush.trigCycle.value == 0) {
@@ -135,7 +134,6 @@
 
 						if (brush.radius.value <= brush.radius.min) {
 							incrementor([brush.trigCycle]);
-							console.log(brush.trigCycle)
 						}
 
 						brush.x = brush.x1;
@@ -159,14 +157,12 @@
 
 						if (brush.radius.value <= brush.radius.min) {
 							incrementor([brush.trigCycle]);
-							console.log(brush.trigCycle)
 						}
 
 						brush.x = brush.x1;
 						brush.y = brush.y1;
 						brush.radius.step = 1;
 					} 
-
 				}
 			}
 
@@ -259,7 +255,7 @@
 			}
 
 			function changeShape(brush, category) {
-				//scrolls through the shapes in a category
+				//scrolls through the shapes in a category from the Shapes object
 				let current = brush.shape.name;
 				let keys = Object.keys(category);
 				let index = keys.indexOf(current);
@@ -274,12 +270,43 @@
 				brush.shape = category[next];
 			}
 
+			function rotator(brush, direction) {
+				//most functions take brush, but some take additional arguments
+				//I'll forget the nature of those additional arguments and rely 
+				//on the console for debugging
+				if (direction != "clockwise" && direction != "counter-clockwise") {
+					console.log("Error Usage: rotator(brush, 'clockwise' || 'counter-clockwise')")
+				}
+
+				if (direction == "counter-clockwise") {
+					if (brush.angle.value < brush.angle.max) {
+						brush.angle.value--;
+					} else {
+						brush.angle.value += brush.angle.max;
+						brush.angle.value--;
+					}
+				} else {
+					if (brush.angle.value > brush.angle.min) {
+						brush.angle.value++;
+					} else {
+						brush.angle.value -= brush.angle.max
+						brush.angle.value++;
+					}
+				}
+
+				brush.x1 += brush.radius.value * Math.cos(brush.angle.value);
+				brush.y1 += brush.radius.value * Math.sin(brush.angle.value);
+			}
+
+			var isDrawing = false;
+
 			frontground.addEventListener("mousemove", e => {
 				brush.x1 = e.offsetX;
 				brush.y1 = e.offsetY;
 				
-				incrementor([brush.radius])
-				colorScroller(brush)
+				
+					incrementor([brush.radius])
+					colorScroller(brush)
 
 				if (brush.radius.value == 0) {
 					randomColor(brush)
@@ -287,10 +314,20 @@
 					if (Object.keys(Shapes.classic).indexOf(brush.shape.name) > -1) {
 						changeShape(brush, Shapes.classic);
 					}
-				}	
+				}
 
-				draw(brush);
+				if (isDrawing) {
+					draw(brush);
+					}
 			});
+
+			window.addEventListener("mousedown", e => {
+				isDrawing = true;
+			});
+
+			window.addEventListener("mouseup", e => {
+				isDrawing = false;
+			})
 			
 			window.addEventListener("keydown", e => {
 
@@ -307,16 +344,33 @@
 					if (brush.radius.value < brush.radius.max) {
 						brush.radius.value++;
 						colorScroller(brush);
-						draw(brush);
 					};
+					draw(brush);
 					break;
 
 					case "ArrowDown":
 					if (brush.radius.value > brush.radius.min) {
 						brush.radius.value--;
 						colorScroller(brush);
-						draw(brush);
 					}
+					draw(brush);
+					break;
+
+					case "ArrowLeft":
+					rotator(brush, "counter-clockwise");
+					colorScroller(brush);
+					draw(brush);
+					break;
+
+					case "ArrowRight":
+					rotator(brush, "clockwise");
+					colorScroller(brush);
+					draw(brush);
+					break;
+
+					case " ":
+					randomColor(brush);
+					draw(brush);
 					break;
 				}
 			});
